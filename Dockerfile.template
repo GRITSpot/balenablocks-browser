@@ -1,11 +1,12 @@
-ARG NODEJS_VERSION="12"
+ARG NODEJS_VERSION="18"
 
-FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-node:${NODEJS_VERSION}-buster-run
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-node:${NODEJS_VERSION}-bullseye-run
 
 # install required packages
 RUN install_packages \
-    chromium-common=89.0.4389.114-1~deb10u1 \
-    chromium=89.0.4389.114-1~deb10u1 \
+    chromium-common \
+    chromium-driver \
+    chromium \
     libgles2-mesa \
     lsb-release \
     mesa-vdpau-drivers \
@@ -23,7 +24,7 @@ WORKDIR /usr/src/app
 
 # install node dependencies
 COPY ./package.json /usr/src/app/package.json
-RUN JOBS=MAX npm install --unsafe-perm --production && npm cache clean --force
+RUN JOBS=MAX npm install --omit=dev && npm cache clean --force
 
 COPY ./src /usr/src/app/
 
