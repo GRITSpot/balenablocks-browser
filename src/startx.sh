@@ -34,6 +34,13 @@ if [[ -z "$WINDOW_SIZE" ]]; then
   echo "Window size detected as $WINDOW_SIZE"
 else
   echo "Window size set by environment variable to $WINDOW_SIZE"
+
+  # Set the resolution based on the screen size
+  IFS=$'\n'
+  outputs=$(xrandr | grep " connected" | awk '{ print $1 }')
+  for output in $outputs; do
+    xrandr --output "$output" --mode "${WINDOW_SIZE/,/x}"
+  done
 fi
 
 # rotate screen if env variable is set [normal, inverted, left or right]
